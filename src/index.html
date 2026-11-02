@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Facuedu.uy AYUDA Navegadore</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============ BIENVENIDA (solo primera vez) ============ -->
+  <div id="welcome-overlay" class="hidden">
+    <div id="welcome-step" class="welcome-card">
+      <img src="../assets/logo.png" alt="Facuedu.uy" class="welcome-logo" />
+      <h1>Facuedu.uy AYUDA Navegadore</h1>
+      <p>Tu navegador, simple y directo.</p>
+      <button id="welcome-continue-btn">Continuar</button>
+    </div>
+
+    <div id="video-step" class="welcome-card wide hidden">
+      <h2>Bienvenida</h2>
+      <p>Mirá este video corto para conocer el navegador.</p>
+      <video id="welcome-video" src="../assets/bienvenida.mp4" controls playsinline></video>
+      <p id="video-error" class="hidden">No se pudo cargar el video, pero podés seguir igual.</p>
+      <button id="video-continue-btn">Continuar</button>
+    </div>
+
+    <div id="theme-step" class="welcome-card hidden">
+      <h2>Elegí el estilo</h2>
+      <p>Podés cambiarlo después.</p>
+      <div class="theme-options">
+        <button class="theme-option" data-theme="dark">
+          <span class="theme-swatch swatch-dark"></span>
+          Negro
+        </button>
+        <button class="theme-option" data-theme="light">
+          <span class="theme-swatch swatch-light"></span>
+          Claro
+        </button>
+        <button class="theme-option" data-theme="auto">
+          <span class="theme-swatch swatch-auto"></span>
+          Negro y Claro
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ INICIO DE SESIÓN ============ -->
+  <div id="login-overlay" class="hidden">
+    <div class="welcome-card wide login-card">
+      <img src="../assets/logo.png" alt="Facuedu.uy" class="login-logo" />
+      <h2>Iniciá sesión</h2>
+      <p class="secret-note">Iniciar sesión es opcional. Tu contraseña es secreta: no la compartas con nadie.</p>
+
+      <div class="login-tabs">
+        <button class="login-tab active" data-tab="email">Correo y contraseña</button>
+        <button class="login-tab" data-tab="phone">Desde el teléfono (QR)</button>
+      </div>
+
+      <form id="email-form" class="login-section">
+        <input id="login-email" type="email" placeholder="Correo electrónico" autocomplete="username" />
+        <input id="login-password" type="password" placeholder="Contraseña" autocomplete="current-password" />
+        <div class="login-actions">
+          <button type="submit" id="signin-btn">Iniciar sesión</button>
+          <button type="button" id="signup-btn" class="secondary">Crear cuenta</button>
+        </div>
+        <div class="oauth-row">
+          <button type="button" class="oauth-btn" data-provider="google">Continuar con Google</button>
+          <button type="button" class="oauth-btn" data-provider="github">Continuar con GitHub</button>
+        </div>
+      </form>
+
+      <div id="phone-section" class="login-section hidden">
+        <p class="phone-help">1. Abrí la página de Facuedu en tu teléfono e iniciá sesión (o escaneá el QR).</p>
+        <p class="phone-help">2. Copiá este código y pegalo en el campo <strong>Código</strong> de la página del teléfono.</p>
+        <img id="phone-qr" alt="Código QR para iniciar sesión desde el teléfono" />
+        <div class="code-row">
+          <code id="phone-code" class="login-code">Generando código...</code>
+          <button type="button" id="copy-code-btn" class="secondary">Copiar</button>
+        </div>
+        <p id="phone-timer" class="muted"></p>
+        <button type="button" id="phone-refresh-btn" class="secondary">Generar otro código</button>
+      </div>
+
+      <p id="login-message" class="login-message"></p>
+      <button type="button" id="login-close-btn" class="secondary close-login">Seguir sin cuenta</button>
+    </div>
+  </div>
+
+  <!-- ============ NAVEGADOR ============ -->
+  <div id="chrome">
+    <div id="tabbar">
+      <div id="tabs"></div>
+      <button id="new-tab-btn" title="Nueva pestaña">+</button>
+    </div>
+
+    <div id="toolbar">
+      <button id="back-btn" class="nav-btn" title="Atrás">◀</button>
+      <button id="forward-btn" class="nav-btn" title="Adelante">▶</button>
+      <button id="reload-btn" class="nav-btn" title="Recargar">⟳</button>
+      <button id="home-btn" class="nav-btn" title="Inicio">⌂</button>
+
+      <div id="address-wrap">
+        <input id="address-bar" type="text" placeholder="Buscar en Google o escribir una URL" />
+      </div>
+
+      <button id="translate-btn" class="nav-btn icon-btn" title="Traducir página">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 5h9M7.5 3v2M10 5c-.7 3-2.7 5.5-5 7M5 9c1.5 1.5 3.5 2.5 5.5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 21l4-9 4 9M15.3 18h5.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button id="extensions-btn" class="nav-btn icon-btn" title="Extensiones">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 7h4V5.5a2 2 0 114 0V7h4v4h-1.5a2 2 0 100 4H16v4H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button id="downloads-btn" class="nav-btn icon-btn" title="Descargas">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3v11m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button id="history-btn" class="nav-btn icon-btn" title="Historial">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 12a9 9 0 1 0 3-6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 4v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 8v4.5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div id="menu-wrap">
+        <button id="menu-btn" class="nav-btn icon-btn" title="Más opciones">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="5" r="2"/>
+            <circle cx="12" cy="12" r="2"/>
+            <circle cx="12" cy="19" r="2"/>
+          </svg>
+        </button>
+        <div id="menu-dropdown" class="dropdown hidden">
+          <button id="pin-page-btn">Anclar / desanclar esta página</button>
+          <button id="settings-btn">Motor de búsqueda</button>
+          <button id="ext-menu-btn">Extensiones</button>
+          <button id="dev-tools-btn">Herramientas para desarrolladores (F12)</button>
+          <button id="help-btn">Encuentro de Facuedu.uy AYUDA</button>
+          <button id="clear-history-btn">Borrar historial</button>
+          <button id="logout-btn">Iniciar sesión</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de anclados: siempre visible -->
+    <div id="pinned-bar">
+      <div id="pinned-list"></div>
+    </div>
+
+    <div id="downloads-toast"></div>
+    <div id="app-toast" class="hidden"></div>
+
+    <!-- Menú de clic derecho sobre una pestaña -->
+    <div id="tab-menu" class="dropdown hidden">
+      <button id="tab-pin-btn">Anclar</button>
+    </div>
+
+    <div id="downloads-panel" class="panel hidden">
+      <h3>Descargas</h3>
+      <ul id="downloads-list"></ul>
+    </div>
+
+    <div id="history-panel" class="panel hidden">
+      <h3>Historial</h3>
+      <ul id="history-list"></ul>
+    </div>
+
+    <div id="extensions-panel" class="panel hidden">
+      <h3>Extensiones</h3>
+      <p class="warn">Instalá solo extensiones de personas de confianza y con ayuda de un adulto.</p>
+      <p class="note">Electron soporta solo una parte de las extensiones de Chrome. Si una no funciona, el navegador sigue abierto.</p>
+      <button id="ext-install-btn" class="wide-btn">Instalar desde una carpeta</button>
+      <p id="ext-status" class="status"></p>
+      <ul id="ext-list"></ul>
+      <button id="ext-guide-btn" class="wide-btn">Guía de extensiones (paso a paso)</button>
+      <h4>Dónde buscar extensiones</h4>
+      <div class="store-links">
+        <button class="store-link" data-url="https://chromewebstore.google.com/">Chrome Web Store</button>
+        <button class="store-link" data-url="https://microsoftedge.microsoft.com/addons">Microsoft Edge Add-ons</button>
+        <button class="store-link" data-url="https://addons.opera.com/">Opera GX (GX Mods)</button>
+        <button class="store-link" data-url="https://addons.mozilla.org/">Firefox Add-ons</button>
+      </div>
+      <p class="note">Firefox usa otro formato (.xpi) y no funciona en este navegador. Las de Chrome, Edge y Opera GX sí pueden funcionar.</p>
+    </div>
+
+    <div id="settings-panel" class="panel hidden">
+      <h3>Motor de búsqueda</h3>
+      <p class="note">Se usa al escribir en la barra de direcciones o en la página de inicio.</p>
+      <select id="engine-select"></select>
+    </div>
+  </div>
+
+  <!-- Confirmación genérica -->
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-card">
+      <h3 id="confirm-title"></h3>
+      <p id="confirm-text"></p>
+      <div class="modal-actions">
+        <button id="confirm-cancel" class="secondary">Cancelar</button>
+        <button id="confirm-ok">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

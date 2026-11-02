@@ -1,0 +1,36 @@
+name: Build macOS (firmado y notarizado)
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      # Firma y notarización: requiere los secretos configurados en GitHub (ver README).
+      - name: Compilar, firmar y notarizar
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: npm run build:mac
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: facuedu-navegadore-mac
+          path: |
+            dist/*.dmg
+            dist/*.zip

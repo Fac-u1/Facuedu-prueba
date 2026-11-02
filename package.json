@@ -1,0 +1,111 @@
+{
+  "name": "facuedu-ayuda-navegadore",
+  "version": "1.1.1",
+  "description": "Facuedu.uy AYUDA Navegadore - navegador con pestañas, historial, descargas, extensiones, anclados e inicio de sesión",
+  "main": "main.js",
+  "author": "Facuedu.uy",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win nsis portable",
+    "build:linux": "electron-builder --linux AppImage deb",
+    "build:mac": "electron-builder --mac dmg zip",
+    "build:all": "electron-builder --win nsis portable --linux AppImage deb --mac dmg zip"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "publish": null,
+    "appId": "uy.facuedu.ayuda.navegadore",
+    "productName": "Facuedu.uy AYUDA Navegadore",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "preload-page.js",
+      "config.js",
+      "src/**/*",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Facuedu.uy AYUDA Navegadore"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "Network",
+      "executableName": "facuedu-ayuda-navegadore"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "public.app-category.education",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "dmg": {
+      "title": "Facuedu.uy AYUDA Navegadore ${version}"
+    }
+  }
+}

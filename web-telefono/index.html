@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iniciar sesión en la computadora - Facuedu.uy</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(160deg, #6320ee, #ff2d95); padding: 18px;
+    }
+    .card {
+      background: #fff; color: #202124; border-radius: 18px; padding: 28px 24px;
+      width: 100%; max-width: 380px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    h1 { font-size: 19px; color: #6320ee; margin: 0 0 6px; }
+    .secret { color: #b00020; font-weight: 600; font-size: 13px; margin: 0 0 18px; }
+    form, .section { display: flex; flex-direction: column; gap: 10px; }
+    input {
+      padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 15px; width: 100%;
+      font-family: Consolas, monospace; text-transform: uppercase;
+    }
+    button {
+      padding: 12px; border-radius: 12px; border: none; background: #6320ee; color: #fff;
+      font-size: 14px; cursor: pointer; width: 100%;
+    }
+    button.oauth { background: #fff; color: #202124; border: 1px solid #ccc; }
+    button.secondary { background: #e9e9ee; color: #333; }
+    button:disabled { opacity: 0.6; cursor: default; }
+    .divider { font-size: 12px; color: #777; margin: 10px 0; }
+    .hint { font-size: 12px; color: #666; margin: 0; text-align: left; }
+    .hidden { display: none !important; }
+    #msg { font-size: 13px; min-height: 18px; margin-top: 14px; }
+    .error { color: #b00020; }
+    .ok { color: #1b7a3a; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Facuedu.uy AYUDA Navegadore</h1>
+    <p class="secret">Tu contraseña es secreta: no la compartas con nadie.</p>
+
+    <section id="step-login" class="section">
+      <form id="login-form">
+        <input id="email" type="email" placeholder="Correo electrónico" autocomplete="username" required style="text-transform:none" />
+        <input id="password" type="password" placeholder="Contraseña" autocomplete="current-password" required style="text-transform:none" />
+        <button type="submit">Iniciar sesión</button>
+      </form>
+      <p class="divider">o</p>
+      <button type="button" class="oauth" data-provider="google">Continuar con Google</button>
+      <button type="button" class="oauth" data-provider="github">Continuar con GitHub</button>
+    </section>
+
+    <section id="step-approve" class="section hidden">
+      <p>¿Querés iniciar sesión en la computadora con la cuenta <strong id="who"></strong>?</p>
+      <p class="hint">Pegá en el campo <strong>Código</strong> el código que te muestra la computadora (empieza con SDFANL-).</p>
+      <input id="code-input" type="text" placeholder="Código" autocomplete="off" spellcheck="false" />
+      <button id="approve-btn">Sí, iniciar sesión en la computadora</button>
+      <button id="logout-btn" class="secondary">Usar otra cuenta</button>
+    </section>
+
+    <p id="msg"></p>
+  </main>
+
+  <script>
+    // Mismos valores que config.js de la app de escritorio (la clave es "publishable").
+    const SUPABASE_URL = 'https://xkzohictfqvdrvqyqdco.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_AEQU-r4Q6y9sSCGT-smaOw_XvR17a-I';
+    const PAGE_URL = window.location.origin + window.location.pathname;
+    const CODE_RE = /^SDFANL-[A-Z0-9]{6,40}$/;
+
+    // Si se llegó con el QR, el código viene en ?login=... ; si no, se pega a mano.
+    const params = new URLSearchParams(window.location.search);
+    const codeFromUrl = (params.get('login') || '').trim().toUpperCase();
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      // Flujo implícito: no depende de un código guardado en el navegador que empezó el inicio,
+      // así Google/GitHub pueden volver en otro navegador (por ejemplo, el predeterminado del teléfono).
+      auth: { persistSession: true, flowType: 'implicit' },
+    });
+
+    const $ = (id) => document.getElementById(id);
+    const setMsg = (text, kind = '') => { $('msg').textContent = text; $('msg').className = kind; };
+    const currentCode = () => $('code-input').value.trim().toUpperCase();
+
+    // Prellenamos el campo con el código del QR, si lo hay.
+    if (codeFromUrl) $('code-input').value = codeFromUrl;
+
+    async function render() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        $('step-login').classList.add('hidden');
+        $('step-approve').classList.remove('hidden');
+        $('who').textContent = session.user.email || 'tu cuenta';
+        if (!currentCode()) setMsg('Pegá el código que muestra la computadora.', '');
+      } else {
+        $('step-login').classList.remove('hidden');
+        $('step-approve').classList.add('hidden');
+      }
+    }
+
+    $('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setMsg('Entrando...');
+      const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
+      if (error) return setMsg('Correo o contraseña incorrectos.', 'error');
+      $('password').value = '';
+      setMsg('');
+      render();
+    });
+
+    document.querySelectorAll('button.oauth').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        // El código viaja en la dirección de vuelta, así no depende del navegador que se abra al volver.
+        const code = currentCode();
+        const back = PAGE_URL + (code ? '?login=' + encodeURIComponent(code) : '');
+        const { error } = await sb.auth.signInWithOAuth({ provider: btn.dataset.provider, options: { redirectTo: back } });
+        if (error) setMsg('No se pudo abrir el inicio de sesión.', 'error');
+      });
+    });
+
+    $('approve-btn').addEventListener('click', async () => {
+      const code = currentCode();
+      if (!CODE_RE.test(code)) return setMsg('Ese código no es válido. Tiene que empezar con SDFANL- y copiarse completo desde la computadora.', 'error');
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) return render();
+      $('approve-btn').disabled = true;
+      setMsg('Autorizando la computadora...');
+      try {
+        const res = await fetch(SUPABASE_URL + '/functions/v1/aprobar-login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: SUPABASE_KEY,
+            Authorization: 'Bearer ' + session.access_token,
+          },
+          body: JSON.stringify({ code }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) {
+          $('step-approve').classList.add('hidden');
+          setMsg('¡Listo! Mirá la computadora: ya debería haber iniciado sesión. Podés cerrar esta página.', 'ok');
+        } else {
+          setMsg(data.error || 'No se pudo aprobar. Generá otro código en la computadora.', 'error');
+          $('approve-btn').disabled = false;
+        }
+      } catch {
+        setMsg('Sin conexión. Revisá internet e intentá de nuevo.', 'error');
+        $('approve-btn').disabled = false;
+      }
+    });
+
+    $('logout-btn').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      setMsg('');
+      render();
+    });
+
+    sb.auth.onAuthStateChange(() => render());
+    render();
+  </script>
+</body>
+</html>

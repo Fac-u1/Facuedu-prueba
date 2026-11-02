@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Extensiones para el Navegadore — Facuedu.uy AYUDA</title>
+<style>
+  :root {
+    --primary: #6320ee; --pink: #ff2d95; --bg: #f8f6fe; --card: #ffffff;
+    --text: #1f1b2e; --muted: #5b5870; --border: #e4dff5;
+    --warn-bg: #fff3c4; --warn-text: #7a4b00; --ok: #1b7a3a; --bad: #b00020;
+    --shadow: 0 10px 30px -14px rgba(99,32,238,0.35);
+    --gradient: linear-gradient(120deg, #6320ee, #ff2d95);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17151f; --card: #26232f; --text: #f1eefb; --muted: #bdb8d0;
+      --border: #3a3550; --warn-bg: #4a3a10; --warn-text: #ffe39a; --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Nunito", "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+  }
+  .hero {
+    background: var(--gradient); color: #fff; text-align: center;
+    padding: 64px 20px 72px;
+  }
+  .hero .kicker { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .92; margin: 0 0 8px; }
+  .hero h1 { font-size: clamp(28px, 5vw, 52px); margin: 0; line-height: 1.15; font-family: "Baloo 2", "Segoe UI", sans-serif; }
+  .hero p { font-size: 18px; max-width: 620px; margin: 16px auto 0; opacity: .95; }
+  main { max-width: 1000px; margin: 0 auto; padding: 0 20px 40px; }
+  section { padding: 28px 0; }
+  h2 {
+    font-family: "Baloo 2", "Segoe UI", sans-serif; font-size: 28px; margin: 0 0 16px;
+    background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+    width: fit-content;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 22px;
+    padding: 22px 24px; box-shadow: var(--shadow);
+  }
+  .grid { display: grid; gap: 18px; grid-template-columns: 1fr; }
+  @media (min-width: 680px) { .grid { grid-template-columns: 1fr 1fr; } }
+  .store { display: flex; flex-direction: column; }
+  .store h3 { margin: 0 0 4px; font-size: 19px; }
+  .store p { margin: 0; color: var(--muted); flex: 1; }
+  .note { margin-top: 12px; background: var(--warn-bg); color: var(--warn-text); border-radius: 12px; padding: 10px 12px; font-size: 14px; font-weight: 700; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; align-self: flex-start;
+    margin-top: 14px; background: var(--gradient); color: #fff; text-decoration: none;
+    border-radius: 999px; padding: 10px 20px; font-weight: 700; transition: transform .15s;
+  }
+  .btn:hover { transform: scale(1.04); }
+  table { width: 100%; border-collapse: collapse; overflow: hidden; }
+  th, td { text-align: left; padding: 14px 16px; border-top: 1px solid var(--border); }
+  th { background: rgba(99,32,238,0.08); border-top: none; }
+  .ok { color: var(--ok); font-weight: 700; }
+  .bad { color: var(--bad); font-weight: 700; }
+  .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); }
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .steps li { display: flex; gap: 14px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .num {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--gradient);
+    color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  }
+  .shield { background: var(--gradient); border-radius: 22px; padding: 4px; box-shadow: var(--shadow); }
+  .shield div { background: var(--card); border-radius: 19px; padding: 22px; text-align: center; font-size: 20px; font-weight: 800; }
+  footer { background: var(--gradient); color: #fff; text-align: center; padding: 48px 20px; }
+  footer p.lema { font-family: "Baloo 2", "Segoe UI", sans-serif; font-size: 26px; font-weight: 700; margin: 0; }
+  footer a {
+    display: inline-flex; margin-top: 22px; background: #fff; color: var(--primary); text-decoration: none;
+    border-radius: 999px; padding: 12px 24px; font-weight: 800; transition: transform .15s;
+  }
+  footer a:hover { transform: scale(1.05); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="kicker">Facuedu.uy AYUDA Navegadore</p>
+  <h1>Extensiones para el Navegadore</h1>
+  <p>Qué son, dónde buscarlas y cómo instalarlas con seguridad.</p>
+</header>
+
+<main>
+  <section>
+    <h2>¿Qué es una extensión?</h2>
+    <div class="card">
+      🧩 Una extensión es un <strong>complemento pequeño</strong> que le agrega funciones nuevas al navegador. Es como sumarle una herramienta extra a tu mochila.
+    </div>
+  </section>
+
+  <section>
+    <h2>Dónde buscar extensiones</h2>
+    <div class="grid">
+      <article class="card store">
+        <h3>Chrome Web Store</h3>
+        <p>La tienda de extensiones de Google Chrome.</p>
+        <a class="btn" href="https://chromewebstore.google.com/" target="_blank" rel="noopener noreferrer">Visitar sitio ↗</a>
+      </article>
+      <article class="card store">
+        <h3>Microsoft Edge Add-ons</h3>
+        <p>La tienda de complementos de Microsoft Edge.</p>
+        <a class="btn" href="https://microsoftedge.microsoft.com/addons" target="_blank" rel="noopener noreferrer">Visitar sitio ↗</a>
+      </article>
+      <article class="card store">
+        <h3>Opera GX (GX Mods)</h3>
+        <p>Complementos y mods del navegador Opera.</p>
+        <a class="btn" href="https://addons.opera.com/" target="_blank" rel="noopener noreferrer">Visitar sitio ↗</a>
+      </article>
+      <article class="card store">
+        <h3>Firefox Add-ons</h3>
+        <p>La tienda de complementos de Mozilla Firefox.</p>
+        <div class="note">⚠️ Firefox usa otro formato (.xpi) y no funciona en el Navegadore.</div>
+        <a class="btn" href="https://addons.mozilla.org/" target="_blank" rel="noopener noreferrer">Visitar sitio ↗</a>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>Compatibilidad</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tienda</th><th>¿Funciona en el Navegadore?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Chrome Web Store</strong></td><td class="ok">✅ Puede funcionar, no todas</td></tr>
+          <tr><td><strong>Edge Add-ons</strong></td><td class="ok">✅ Puede funcionar, no todas</td></tr>
+          <tr><td><strong>Opera GX</strong></td><td class="ok">✅ Puede funcionar, no todas</td></tr>
+          <tr><td><strong>Firefox</strong></td><td class="bad">❌ No funciona</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--muted); margin-top:16px;">
+      El Navegadore usa <strong>Electron</strong>, que soporta solo una parte de la API de extensiones de Chrome. Por eso algunas extensiones pueden no andar.
+    </p>
+  </section>
+
+  <section>
+    <h2>Cómo instalar desde una carpeta</h2>
+    <ol class="steps">
+      <li><span class="num">1</span><span>Descargá la extensión desde la tienda.</span></li>
+      <li><span class="num">2</span><span>Descomprimí el archivo en una carpeta (debe tener un archivo <strong>manifest.json</strong>).</span></li>
+      <li><span class="num">3</span><span>En el Navegadore, abrí el ícono de rompecabezas y elegí <strong>"Instalar desde una carpeta"</strong>.</span></li>
+      <li><span class="num">4</span><span>Elegí la carpeta descomprimida.</span></li>
+    </ol>
+    <p style="color:var(--muted); margin-top:14px;">Podés activar, desactivar o quitar extensiones desde el mismo panel.</p>
+  </section>
+
+  <section>
+    <h2>Antes de instalar</h2>
+    <div class="shield"><div>🛡️ Instalá solo extensiones de personas de confianza y con ayuda de un adulto.</div></div>
+  </section>
+</main>
+
+<footer>
+  <p class="lema">Siempre es bueno, ¡Ayuda te ayuda!</p>
+  <a href="https://e-facueduyayuda.mystrikingly.com" target="_blank" rel="noopener noreferrer">Para saber más ↗</a>
+</footer>
+
+</body>
+</html>

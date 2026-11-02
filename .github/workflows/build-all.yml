@@ -1,0 +1,70 @@
+name: Build todas las plataformas
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - name: Compilar Windows (32 y 64 bits)
+        run: npm run build:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: facuedu-navegadore-windows
+          path: |
+            dist/*.exe
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - name: Compilar Linux (64 bits)
+        run: npm run build:linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: facuedu-navegadore-linux
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - name: Compilar macOS (Apple Silicon e Intel)
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "$CSC_LINK" ]; then
+            npm run build:mac
+          else
+            unset CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID
+            CSC_IDENTITY_AUTO_DISCOVERY=false npm run build:mac
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: facuedu-navegadore-mac
+          path: |
+            dist/*.dmg
+            dist/*.zip
