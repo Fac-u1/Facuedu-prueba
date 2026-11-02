@@ -19,14 +19,27 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Compilar macOS SIN firma (no hay certificado cargado)
-        if: ${{ secrets.MAC_CERT_P12_BASE64 == '' }}
+      - name: Detectar si hay certificado cargado
+        id: cert
+        env:
+          CERT_B64: ${{ secrets.MAC_CERT_P12_BASE64 }}
+        run: |
+          if [ -n "$CERT_B64" ]; then
+            echo "has_cert=true" >> "$GITHUB_OUTPUT"
+            echo "Certificado encontrado: se va a firmar."
+          else
+            echo "has_cert=false" >> "$GITHUB_OUTPUT"
+            echo "No hay certificado: se compila sin firma."
+          fi
+
+      - name: Compilar macOS SIN firma
+        if: steps.cert.outputs.has_cert == 'false'
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: npm run build:mac
 
       - name: Compilar macOS FIRMADO y notarizado
-        if: ${{ secrets.MAC_CERT_P12_BASE64 != '' }}
+        if: steps.cert.outputs.has_cert == 'true'
         env:
           CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
