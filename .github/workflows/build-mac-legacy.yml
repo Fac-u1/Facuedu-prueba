@@ -1,0 +1,38 @@
+name: Build macOS legacy (Intel, Mojave 10.14)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  legacy:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias del proyecto
+        run: npm install
+
+      - name: Fijar versiones compatibles con macOS 10.14
+        run: |
+          npm install --save-dev electron@26.6.10
+          npm install @supabase/supabase-js@2.45.4
+          node -e "console.log('Electron:', require('electron/package.json').version)"
+
+      - name: Compilar para Intel (x64) con mínimo macOS 10.14
+        run: npx electron-builder --mac dmg zip --x64 -c.mac.minimumSystemVersion=10.14
+
+      - name: Verificar archivos generados
+        run: |
+          ls -la dist/
+          test -n "$(ls dist/*.dmg 2>/dev/null)" || (echo "No se generó el .dmg" && exit 1)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: facuedu-navegadore-mac-legacy
+          path: |
+            dist/*.dmg
+            dist/*.zip
