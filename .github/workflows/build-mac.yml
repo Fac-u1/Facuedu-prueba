@@ -16,10 +16,17 @@ jobs:
         with:
           node-version: 20
 
-      - run: npm install
+      - name: Instalar dependencias
+        run: npm install
 
-      # Firma y notarización: requiere los secretos configurados en GitHub (ver README).
-      - name: Compilar, firmar y notarizar
+      - name: Compilar macOS SIN firma (no hay certificado cargado)
+        if: ${{ secrets.MAC_CERT_P12_BASE64 == '' }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: npm run build:mac
+
+      - name: Compilar macOS FIRMADO y notarizado
+        if: ${{ secrets.MAC_CERT_P12_BASE64 != '' }}
         env:
           CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
@@ -28,7 +35,8 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: npm run build:mac
 
-      - uses: actions/upload-artifact@v4
+      - name: Subir archivos generados
+        uses: actions/upload-artifact@v4
         with:
           name: facuedu-navegadore-mac
           path: |
